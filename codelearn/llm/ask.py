@@ -88,16 +88,16 @@ def ask(project: Project, origin_query: str, vector_store: VectorStoreBase, embe
     answer = question_chain(inputs={"origin_query": origin_query, "context": context})
     return answer
 
-def ask_by_chain(project: Project, origin_query: str, vector_store: VectorStoreBase, embending: Embeddings, languages: List[str] = ["en-US", "zh-CN"]) -> str:
+def ask_by_chain(openai_api_key: str, project: Project, origin_query: str, vector_store: VectorStoreBase, embending: Embeddings, languages: List[str] = ["en-US", "zh-CN"]) -> str:
     llm = OpenAI(
         temperature=0,
-        openai_api_key = ""
+        openai_api_key = openai_api_key
     )
     code_retrival = CodeRetriever(vector_store=vector_store, embending=embending, index_name="code")
     multi_retrievel = MultiQueryMultiRetriever.from_llm(retrievers=[code_retrival], llm=llm, project=project, languages=languages)
     llm = OpenAI(
         temperature=0,
-        openai_api_key = ""
+        openai_api_key = openai_api_key
     )
     print(f"preject is {project}")
     chat_history = []

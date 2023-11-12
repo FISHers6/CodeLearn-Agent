@@ -18,15 +18,21 @@ from codelearn.tools.file_content_view import FileContentViewTool
 from codelearn.tools.project_struct_view import ProjectStructViewTool
 # Define which tools the agent can use to answer user queries
 from langchain.tools import BaseTool
+import os
 
-llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k", openai_api_key = "")
+OPEN_API_KEY = os.environ.get('OPEN_API_KEY')
+GITHUB_REPO_URL = os.environ.get('REPO_URL', "https://github.com/FISHers6/swim/archive/refs/heads/main.zip")
+
+PROJECT_ID = os.environ.get('PROJECT_ID', "69843d5d-1e3d-4b54-a92e-f9573a875c93")
+
+llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k", openai_api_key = OPEN_API_KEY)
 loader_name: str="github_loader", 
 llm_math_chain = LLMMathChain.from_llm(llm=llm, verbose=True)
 loaders: Dict[str, ProjectLoader] = {
     loader_name: GithubLoader()
 }
-repo_url = "https://github.com/FISHers6/swim/archive/refs/heads/main.zip"
-project_id= "69843d5d-1e3d-4b54-a92e-f9573a875c93"
+repo_url = GITHUB_REPO_URL
+project_id= PROJECT_ID
 storage : ProjectStorage = ProjectStorage()
 cache: ProjectCache = ProjectCache()
 storage_manager: ProjectStorageManager = ProjectStorageManager(storage=storage, cache=cache)

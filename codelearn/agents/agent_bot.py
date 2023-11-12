@@ -38,7 +38,6 @@ class AskCodeWithMemory:
         #self.memory=ConversationBufferWindowMemory(k=5)
         if not embending:
             self.embending = OpenAIEmbeddings(
-                openai_api_base = "https://api.openai-sb.com/v1",
                 openai_api_key = openai_api_key
             )
         else:
