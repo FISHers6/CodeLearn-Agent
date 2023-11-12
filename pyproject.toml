@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "codelearn"
+version = "0.1.0"
+description = ""
+authors = ["fishers66 <fisherfkb@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+langchain = "^0.0.305"
+requests = "^2.25.1"
+gitpython = "^3.1.14"
+tree_sitter_languages = "1.7.0"
+pandas = "^2.0.0"
+openai = "^0.28.1"
+tiktoken = "^0.5.1"
+faiss-cpu = "^1.7.4"
+gradio = "4.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

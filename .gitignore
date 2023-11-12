@@ -1,0 +1,4 @@
+storage/projects/*
+storage/faiss/*
+storage/db/*
+*.db
