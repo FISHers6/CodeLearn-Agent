@@ -1,4 +1,6 @@
+import io
 import os
+import re
 import time
 import git
 import requests
@@ -13,8 +15,6 @@ from codelearn.project.project import Project
 class GitSourceProvider(SourceProvider):
 
     def fetch_contents(self, repo_url: str = None, local_dir: str = None) -> FileTree:
-        print("111")
-        print("fetch_contents")
         project_path = local_dir
         if local_dir:
             local_dir = os.path.join(LOCAL_PROJECT_PATH, local_dir)
@@ -23,25 +23,45 @@ class GitSourceProvider(SourceProvider):
         else:
             project_path = repo_url.replace('/', '_').replace(':', '_').replace('.', '_')
             local_dir = os.path.join(LOCAL_PROJECT_PATH, project_path)
-        # 如果是git@格式的URL，转换为https格式
+
+        # 处理 git@ 格式的 URL
         if repo_url.startswith('git@'):
             repo_url = repo_url.replace(':', '/').replace('git@', 'https://')
-        print(repo_url)
-        # 如果是.zip结尾的URL，处理为ZIP下载
+
         try:
             if repo_url.endswith('.zip'):
+                # 处理直接的 ZIP 下载链接
                 response = requests.get(repo_url)
                 with zipfile.ZipFile(BytesIO(response.content)) as z:
                     z.extractall(local_dir)
             else:
-                # 克隆git仓库
-                git.Repo.clone_from(repo_url, local_dir)
+                # 处理标准的 GitHub 项目地址
+                owner, repo = self.extract_github_repo_info(repo_url)
+                default_branch = self.get_default_branch(owner, repo)
+                download_url = f"https://github.com/{owner}/{repo}/archive/refs/heads/{default_branch}.zip"
+                response = requests.get(download_url)
+                with zipfile.ZipFile(BytesIO(response.content)) as z:
+                    z.extractall(local_dir)
         except Exception as e:
             print(f"fetch_contents error: {e}")
             raise e
+
         print("fetch_contents over")
-        # 构建文件系统树并返回
         return FileTree(local_dir, project_path)
+
+    def extract_github_repo_info(self, url):
+        match = re.search(r"github\.com/([^/]+/[^/]+)", url)
+        if not match:
+            raise ValueError("Invalid GitHub URL")
+        return match.group(1).split('/')
+
+    def get_default_branch(self, owner, repo):
+        url = f"https://api.github.com/repos/{owner}/{repo}"
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch repository info: {response.content.decode()}")
+        repo_info = response.json()
+        return repo_info.get("default_branch", "main")
 
 
 # 从Github加载项目

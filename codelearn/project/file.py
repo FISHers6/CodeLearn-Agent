@@ -97,6 +97,7 @@ class FileTree:
         # 查找指定的目录节点
         directory_node = self._find_node(self.root, directory_name)
         if not directory_node:
+            print("not directory_node")
             return []
 
         queue = deque([directory_node])  # 将指定的目录节点添加到队列中
@@ -106,7 +107,7 @@ class FileTree:
             node = queue.popleft()  # 从队列中取出一个节点
 
             files_and_directories.append(node.name)  # 将节点的名称添加到结果列表中
-
+            print(f"append(node.name), {node.name}")
             # 如果节点是目录，则将其子节点添加到队列中以供进一步处理
             if node.is_directory:
                 queue.extend(node.children)
@@ -131,7 +132,9 @@ class FileTree:
         return []
 
     def _find_node(self, node: FileNode, name: str):
+        print("start find node {0}".format(node.name))
         if node.name == name:
+            print("return node {0}".format(name))
             return node
         for child in node.children:
             found = self._find_node(child, name)

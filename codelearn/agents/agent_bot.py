@@ -20,7 +20,7 @@ class AskCodeWithMemory:
         openai_api_base: str = None, 
         embending: Any = None,
         ai_name: str = "CodeLearn AI",
-        loader_name: str="github_loader", 
+        loader_name: str= "github_loader", 
         languages = ["en-US", "zh-CN"],
         history = []
     ) -> None:
