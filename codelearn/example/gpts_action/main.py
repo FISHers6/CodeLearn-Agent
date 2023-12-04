@@ -1,5 +1,9 @@
 from codelearn.example.gpts_action.api import app
+from codelearn.storage.project_db import init_db
 
+
+
+init_db()
 
 # Dockerfile for containerization can be created separately
 
