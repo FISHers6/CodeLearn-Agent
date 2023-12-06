@@ -54,7 +54,7 @@ async def get_project_structure(github_url: str = Query(..., description="GitHub
     return ProjectStructureResponse(structure=structure, ToolHint=toolHint)
 
 # Endpoint for sub-directory files
-@app.get("/subDirectoryFiles", response_model=SubDirectoryFilesResponse)
+@app.post("/subDirectoryFiles", response_model=SubDirectoryFilesResponse)
 async def get_sub_directory_files(request: SubDirectoryFilesRequest):
     print(request)
     filenames = []
