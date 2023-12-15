@@ -13,6 +13,7 @@ BASE_PROJECT_PATH = os.path.join(project_root_path, "storage", "local_project")
 LOCAL_PROJECT_PATH = os.path.join(BASE_PROJECT_PATH, "projects")
 
 base_project_db_path = os.path.join(project_root_path, "storage", "db")
+CONFIG_PATH = os.path.join(project_root_path, "codelearn", "config.yml")
 
 # 确保 'project_db' 文件夹存在，如果不存在则创建它
 os.makedirs(base_project_db_path, exist_ok=True)

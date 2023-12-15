@@ -6,9 +6,7 @@ from codelearn.loader.github_loader import GithubLoader
 from codelearn.loader.loader import ProjectLoader
 from codelearn.project.project_manager import ProjectManager
 from codelearn.storage.project_storage import ProjectCache, ProjectStorage, ProjectStorageManager
-from codelearn.tools.directory_struct_view import DirectoryStructViewTool
-from codelearn.tools.file_content_view import FileContentViewTool
-from codelearn.tools.project_struct_view import ProjectStructViewTool
+from codelearn.config import project_config
 
 # FastAPI app
 app = FastAPI()
@@ -88,6 +86,8 @@ async def get_file_contents(request: FileContentsRequest):
         file_tree = project.contents
         for path in paths:
             file_content = file_tree.get_file_content(path)
+            if project_config.limit_api_token:
+                file_content = file_content[:project_config.api_token_limit_size]
             files.append({
                 "path": path,
                 "content": file_content,
@@ -95,7 +95,7 @@ async def get_file_contents(request: FileContentsRequest):
             })
         description: str = (
             "The 'get_file_content' tool fetches and displays detailed content of specified files within the project, including both source code and documentation. "
-            "Input a comma-separated list of file names (without folder or path names) to view. For example src/example.txt is file, src/example is directory folder"
+            "Input a list of file names (without folder or path names) to view. For example src/example.txt is file, src/example is directory folder"
             "Output is a dictionary with 'files' key containing a list of dictionaries for each file, "
             "**Ensure you've requested the repository structure before asking for file contents.The requested file must exist in the project**"
             "Useful for users diving deep into a project's codebase or documentation to understand its intricacies."

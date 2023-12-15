@@ -1,0 +1,5 @@
+allowed_licenses:
+  - "mit"
+  - "apache-2.0"
+allowed_size: 204800  # in bytes
+space_size: 1048576  # in bytes

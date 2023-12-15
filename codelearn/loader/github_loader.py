@@ -11,6 +11,7 @@ from codelearn.base import BASE_PROJECT_PATH, LOCAL_PROJECT_PATH
 from codelearn.project.file import FileTree
 from codelearn.loader.loader import ProjectLoader, SourceProvider
 from codelearn.project.project import Project
+from codelearn.config import project_config
 
 class GitSourceProvider(SourceProvider):
 
@@ -29,6 +30,12 @@ class GitSourceProvider(SourceProvider):
             repo_url = repo_url.replace(':', '/').replace('git@', 'https://')
 
         try:
+            info = self.get_repo_info(owner, repo)
+            if project_config.enable_licenses and info.get('is_license_allowed', False):
+                raise ValueError("this github project not allowed because of licenses")
+            if info.get('is_size_allowed', False):
+                raise ValueError("this github project not allowed because of space size, too large")
+            default_branch = info.get('default_branch')
             if repo_url.endswith('.zip'):
                 # 处理直接的 ZIP 下载链接
                 response = requests.get(repo_url)
@@ -37,7 +44,6 @@ class GitSourceProvider(SourceProvider):
             else:
                 # 处理标准的 GitHub 项目地址
                 owner, repo = self.extract_github_repo_info(repo_url)
-                default_branch = self.get_default_branch(owner, repo)
                 download_url = f"https://github.com/{owner}/{repo}/archive/refs/heads/{default_branch}.zip"
                 response = requests.get(download_url)
                 with zipfile.ZipFile(BytesIO(response.content)) as z:
@@ -62,6 +68,30 @@ class GitSourceProvider(SourceProvider):
             raise Exception(f"Failed to fetch repository info: {response.content.decode()}")
         repo_info = response.json()
         return repo_info.get("default_branch", "main")
+    
+    def get_repo_info(self, owner, repo):
+        url = f"https://api.github.com/repos/{owner}/{repo}"
+        headers = None
+        if project_config.github_token:
+            headers = {'Authorization': f'token {project_config.github_token}'}
+
+        response = requests.get(url, headers=headers)
+        data = response.json()
+        license_name = data.get('license', {}).get('key')
+        is_license_allowed = False
+        if license_name and project_config.allowed_licenses:
+            is_license_allowed = license_name in project_config.allowed_licenses
+        size = data.get('size', None)
+        is_size_allowed = False
+        if size and project_config.allowed_size:
+            is_size_allowed = size > project_config.allowed_size
+        return {
+            'size': data.get('size', None),
+            'license': license_name,
+            'is_license_allowed': is_license_allowed,
+            'is_size_allowed': is_size_allowed,
+            'default_branch': data.get("default_branch", "main")
+        }
 
 
 # 从Github加载项目

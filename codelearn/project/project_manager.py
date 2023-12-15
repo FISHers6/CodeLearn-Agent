@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 from typing import Any, Dict, List, Optional
@@ -13,6 +14,8 @@ from codelearn.retrieval.retriever import RetrieveResults, Retriever
 from codelearn.splitter.splitter import Splitter
 from codelearn.storage.project_storage import ProjectStorageManager
 from codelearn.storage.vector import VectorStoreBase
+from codelearn.utils.clearn_task_queue import AsyncQueue, async_cleanup
+from codelearn.base import LOCAL_PROJECT_PATH
 
 class ProjectManager:
 
@@ -30,6 +33,14 @@ class ProjectManager:
         self.indexers = indexers
         self.retrievers = retrievers
         self.storage_manager = storage_manager
+        # 初始化异步队列
+        self.cleanup_queue = AsyncQueue()
+        # 启动队列处理循环
+        asyncio.create_task(self.cleanup_queue.run())
+
+    def start_cleanup_task(self):
+        # 将清理任务添加到队列
+        asyncio.create_task(self.cleanup_queue.add_task(async_cleanup(LOCAL_PROJECT_PATH)))
 
     # TODO: repo_url, local_dir 查找项目
     def get_project(self, project_id, loader: ProjectLoader, repo_url=None, local_dir = None) -> Optional[Project]:
@@ -66,14 +77,12 @@ class ProjectManager:
     def create_project(self, loader_name: str, project_source: Dict[str, Any]) -> Project:
         loader = self.loaders.get(loader_name)
         if not loader:
-            print(4)
             raise ValueError(f"Loader not found: {loader_name}")
 
         project_id = project_source.get("id")
         if not project_id:
             project_id = str(uuid.uuid4()) 
             project_source["id"] = project_id
-        print(project_id)
         repo_url = project_source.get("repo_url")
         local_dir = project_source.get("local_dir")
 
@@ -82,7 +91,9 @@ class ProjectManager:
         if project:
             print(f"Project {project_id} is up to date.")
             return project
-        print(f"7")
+        # 检查磁盘空间 LRU异步删除最近最少使用的项目
+        self.start_cleanup_task()
+        # will throw error if load project failed
         project = loader.load_project(project_source)
 
         print(f"create Project {project.id} by loader")
