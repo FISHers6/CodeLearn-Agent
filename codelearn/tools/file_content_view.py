@@ -14,8 +14,8 @@ class FileContentViewTool(BaseTool):
 
     name: str = "get_file_content"
     description: str = (
-        "The 'get_file_content' tool fetches and displays detailed content of specified files within the project, including both source code and documentation. "
-        "Input a comma-separated list of file names (without folder or path names) to view. For example src/example.txt is file, src/example is directory folder"
+        "The 'get_file_content' tool fetches and displays detailed content of specified files within the project, including both source code and documentation. It's an important tool for users who need detailed from code source."
+        "Input a comma-separated list of file names (without folder or path names) to view. Incomplete paths are not accepted. For example swim-main/src/example.txt is a full path file, but 'src/example' is incomplete directory folder not allowed"
         "Output is a dictionary with 'files' key containing a list of dictionaries for each file, "
         "**Ensure you've requested the repository structure before asking for file contents.The requested file must exist in the project**"
         "Useful for users diving deep into a project's codebase or documentation to understand its intricacies."

@@ -54,7 +54,8 @@ def ask_question():
     languages: List[str] = ["en-US", "zh-CN"]
     
     origin_query = "What is the role of the handle function method in Middleware, 用中文详细回答给出代码"
-    project = project_manager.get_project(project_source["id"], loaders[loader_name], project_source["repo_url"])
+    # project = project_manager.get_project(project_source["id"], loaders[loader_name], project_source["repo_url"])
+    project = project_manager.create_project(loader_name, project_source)
     response = ask_by_chain(openai_api_key, project, origin_query, vector_db, embending, languages)
     print(response)
 

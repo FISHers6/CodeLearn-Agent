@@ -15,7 +15,7 @@ class ProjectModel(Base):
     id = Column(String, primary_key=True)
     repo_url = Column(String, nullable=False)
     local_dir = Column(String, nullable=False)
-    last_updated = Column(Integer, default=time.time())
+    last_updated = Column(Integer, default=datetime.now().timestamp())
 
 engine = create_engine(PROJECT_DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)

@@ -57,14 +57,18 @@ class ProjectManager:
             if not project_data.local_dir or not os.path.exists(os.path.join(LOCAL_PROJECT_PATH, project_data.local_dir)):
                 return None
             last_updated_time = project_data.last_updated_time
-            
+            print(last_updated_time)
             # 检查last_updated_time是否为空或None
-            if last_updated_time is None or last_updated_time == '':
+            if last_updated_time is None:
                 print("last_updated_time is empty")
                 return None
+            if isinstance(last_updated_time, str):
+                # 转换为datetime对象
+                last_updated_time = datetime.strptime(last_updated_time, '%Y-%m-%d %H:%M:%S.%f')
+                last_updated_time = last_updated_time.timestamp()
 
             # 获取当前时间戳
-            current_timestamp = time.time()
+            current_timestamp = datetime.now().timestamp()
 
             # 计算时间差（以秒为单位）
             time_difference = current_timestamp - last_updated_time

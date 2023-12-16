@@ -16,7 +16,7 @@ class DirectoryStructViewTool(BaseTool):
     description: str = (
         "The 'get_directory_struct' tool provides a structured view of specified directories within the project. "
         "Input a comma-separated list of directory paths to explore. "
-        "Avoid providing filenames with extensions; **only focus on directory paths.For example src/example.txt is file, src/example is directory folder**"
+        "Avoid providing filenames with extensions; **only focus on full path directory paths.For example swim-main/src/example.txt is file not allowed, src/example is directory folder**"
         "Output includes a dictionary with 'files' key containing the list of files and subdirectories for the provided paths, "
         "and an 'ToolHint' key for guidance on interpreting and further querying the structure. "
         "Useful for delving into specific project directories and understanding their contents."

@@ -4,7 +4,7 @@ import os
 
 OPEN_API_KEY = os.environ.get('OPEN_API_KEY')
 GITHUB_REPO_URL = os.environ.get('REPO_URL', "https://github.com/FISHers6/swim/archive/refs/heads/main.zip")
-PROJECT_ID = os.environ.get('PROJECT_ID', "69843d5d-1e3d-4b54-a92e-f9573a875c93")
+PROJECT_ID = os.environ.get('PROJECT_ID')
 
 def ask_question():
     chat_bot = AskCodeWithMemory(

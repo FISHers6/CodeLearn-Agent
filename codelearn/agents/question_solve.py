@@ -47,42 +47,42 @@ def question_solve_agent(
     # agent_kwargs = {
     #     "extra_prompt_messages": [MessagesPlaceholder(variable_name="chat_history")],
     # }
-    # agent_chain = initialize_agent(
-    #     tools,
-    #     llm,
-    #     agent=AgentType.OPENAI_FUNCTIONS,
-    #     verbose=True,
-    #     memory=chat_history,
-    #     include_run_info=True,
-    #     return_intermediate_steps=True,
-    #     max_iterations=max_iterations,
-    #     handle_parsing_errors=True,
-    #     agent_kwargs=agent_kwargs,
+    agent_chain = initialize_agent(
+        tools,
+        llm,
+        agent=AgentType.OPENAI_FUNCTIONS,
+        verbose=True,
+        memory=chat_history,
+        include_run_info=True,
+        return_intermediate_steps=True,
+        max_iterations=max_iterations,
+        handle_parsing_errors=True,
+        # agent_kwargs=agent_kwargs,
+    )
+
+    answer = agent_chain(query)
+
+    # prompt_with_history = CustomPromptTemplate(
+    #     template=template_with_history,
+    #     tools=tools,
+    #     input_variables=["input", "intermediate_steps", "history"]
     # )
 
-    # answer = agent_chain(query)
+    # output_parser = CustomOutputParser()
 
-    prompt_with_history = CustomPromptTemplate(
-        template=template_with_history,
-        tools=tools,
-        input_variables=["input", "intermediate_steps", "history"]
-    )
+    # # LLM chain consisting of the LLM and a prompt
+    # llm_chain = LLMChain(llm=llm, prompt=prompt_with_history)
 
-    output_parser = CustomOutputParser()
-
-    # LLM chain consisting of the LLM and a prompt
-    llm_chain = LLMChain(llm=llm, prompt=prompt_with_history)
-
-    tool_names = [tool.name for tool in tools]
-    agent = LLMSingleActionAgent(
-        llm_chain=llm_chain,
-        output_parser=output_parser,
-        stop=["\nObservation:"],
-        allowed_tools=tool_names
-    )
-    # return_intermediate_steps=True, 
-    agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=chat_history, max_iterations=max_iterations, handle_parsing_errors=True)
-    answer = agent_executor.run(query)
-    # return answer["output"]
+    # tool_names = [tool.name for tool in tools]
+    # agent = LLMSingleActionAgent(
+    #     llm_chain=llm_chain,
+    #     output_parser=output_parser,
+    #     stop=["\nObservation:"],
+    #     allowed_tools=tool_names
+    # )
+    # # return_intermediate_steps=True, 
+    # agent_executor = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=chat_history, max_iterations=max_iterations, handle_parsing_errors=True)
+    # answer = agent_executor.run(query)
+    return answer["output"]
     # answer = agent_executor(query)
-    return answer
+    # return answer

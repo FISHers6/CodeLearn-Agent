@@ -49,8 +49,8 @@ project_source = {
     "repo_url": repo_url
 }
 project_source = project_source
-project = project_manager.get_project(project_source["id"], loaders[loader_name], project_source["repo_url"])
-
+# project = project_manager.get_project(project_source["id"], loaders[loader_name], project_source["repo_url"])
+project = project_manager.create_project(loader_name, project_source)
 directory_struct_view = DirectoryStructViewTool(project = project)
 file_content_view = FileContentViewTool(project = project)
 project_struct_view = ProjectStructViewTool(project = project)

@@ -9,7 +9,7 @@ from codelearn.storage.vector import FaissStore
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 from langchain.chat_models import ChatOpenAI
-from langchain.chains.conversation.memory import ConversationSummaryBufferMemory, ConversationBufferMemory
+from langchain.chains.conversation.memory import ConversationSummaryBufferMemory, ConversationBufferWindowMemory, ConversationBufferMemory
 
 class AskCodeWithMemory:
     def __init__(
@@ -69,7 +69,8 @@ class AskCodeWithMemory:
         }
         self.project_source = project_source
         self.languages: List[str] = languages
-        self.project = self.project_manager.get_project(project_source["id"], loaders[loader_name], project_source["repo_url"])
+        # self.project = self.project_manager.get_project(project_source["id"], loaders[loader_name], project_source["repo_url"])
+        self.project = self.project_manager.create_project(loader_name, project_source)
     
     def ask(self, question: str):
         answer = question_solve_agent(self.llm, question, self.project, self.vector_db, self.embending, self.languages, chat_history=self.memory)
