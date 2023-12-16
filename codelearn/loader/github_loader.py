@@ -78,8 +78,11 @@ class GitSourceProvider(SourceProvider):
         if project_config.github_token:
             headers = {'Authorization': f'token {project_config.github_token}'}
         print(headers)
+        print(f"owner: {owner}")
+        print(f"repo: {repo}")
         response = requests.get(url, headers=headers)
         data = response.json()
+        print(data)
         license_name = data.get('license', {}).get('key')
         is_license_allowed = False
         if license_name and project_config.allowed_licenses:
