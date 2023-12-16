@@ -35,7 +35,23 @@ Here are some examples of how to use the CodeLearn Agent:
 1. GPT Action API: This is a FastAPI application that provides endpoints for interacting with the CodeLearn Agent. It includes endpoints for getting the project structure, getting the files in a sub-directory, and getting the contents of a file. It uses the `ProjectManager` class to create a project, get the project structure, and get the contents of a file. It also includes a middleware example and a main entry point with settings dependency.
 🏆Here is a gpts application using codeLearn Agent api: https://chat.openai.com/g/g-WKcbq6Yi0-code-learner
 
+```
+1. poetry install
+2. # edit github_token in codelearn/config.yml
+3. python codelearn/example/gpts_action/main.py
+4. eidt gpts actaion scheme, invoke this api
+```
+
+![gpts](https://github.com/FISHers6/CodeLearn-Agent/assets/64670884/ad48a8a5-f186-42a4-8d6e-378cb8338413)
+
 3. Ask Code Web UI: This is a Gradio application that provides a chat interface for interacting with the CodeLearn Agent. It uses the `AskCodeWithMemory` class to ask a question and get a response. The `AskCodeWithMemory` class uses the OpenAI API to translate the question into multiple languages and infer hypothetical code. It then retrieves similar documents and codes and asks the question again.
+
+```
+poetry install
+# edit OPEN_API_KEY and OPEN_API_PROXY and REPO_URL(github url)
+python codelearn/example/ask_code_webui.py
+```
+![web-ui图片](https://github.com/FISHers6/CodeLearn-Agent/assets/64670884/78381063-373f-4540-861c-9309616b4b2d)
 
 4. Ask Code Chain: This is a script that uses the `ask_by_chain` function to ask a question using the CodeLearn Agent. The `ask_by_chain` function uses the OpenAI API to translate the question into multiple languages and infer hypothetical code. It then retrieves similar documents and codes and asks the question again. The script also includes code for creating a project, getting a project, and retrieving code.
 
