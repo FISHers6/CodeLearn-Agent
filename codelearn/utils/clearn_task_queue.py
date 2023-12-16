@@ -42,3 +42,18 @@ async def async_cleanup(storage_path):
             size = os.path.getsize(file)
             os.remove(file)
             current_size -= size
+
+def sync_cleanup(storage_path):
+    max_size = project_config.max_clean_threadshold_size
+    cleaned_size = project_config.after_cleaned_threadshold_size
+    current_size = get_directory_size(storage_path)
+
+    if current_size > max_size:
+        # 删除最近最少访问的文件
+        lru_files = get_least_recently_used_files(storage_path)
+        for file in lru_files:
+            if current_size <= cleaned_size:
+                break
+            size = os.path.getsize(file)
+            os.remove(file)
+            current_size -= size

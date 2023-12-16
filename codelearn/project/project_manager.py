@@ -14,7 +14,7 @@ from codelearn.retrieval.retriever import RetrieveResults, Retriever
 from codelearn.splitter.splitter import Splitter
 from codelearn.storage.project_storage import ProjectStorageManager
 from codelearn.storage.vector import VectorStoreBase
-from codelearn.utils.clearn_task_queue import AsyncQueue, async_cleanup
+from codelearn.utils.clearn_task_queue import AsyncQueue, async_cleanup, sync_cleanup
 from codelearn.base import LOCAL_PROJECT_PATH
 
 class ProjectManager:
@@ -35,12 +35,18 @@ class ProjectManager:
         self.storage_manager = storage_manager
         # 初始化异步队列
         self.cleanup_queue = AsyncQueue()
-        # 启动队列处理循环
+        self.start_async_clean = False
+
+    async def start_async_tasks(self):
         asyncio.create_task(self.cleanup_queue.run())
+        self.start_async_clean = True
 
     def start_cleanup_task(self):
         # 将清理任务添加到队列
-        asyncio.create_task(self.cleanup_queue.add_task(async_cleanup(LOCAL_PROJECT_PATH)))
+        if self.start_async_clean:
+            asyncio.create_task(self.cleanup_queue.add_task(async_cleanup(LOCAL_PROJECT_PATH)))
+        else:
+            sync_cleanup(LOCAL_PROJECT_PATH)
 
     # TODO: repo_url, local_dir 查找项目
     def get_project(self, project_id, loader: ProjectLoader, repo_url=None, local_dir = None) -> Optional[Project]:

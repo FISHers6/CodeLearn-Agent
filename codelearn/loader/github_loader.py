@@ -30,10 +30,11 @@ class GitSourceProvider(SourceProvider):
             repo_url = repo_url.replace(':', '/').replace('git@', 'https://')
 
         try:
+            owner, repo = self.extract_github_repo_info(repo_url)
             info = self.get_repo_info(owner, repo)
-            if project_config.enable_licenses and info.get('is_license_allowed', False):
+            if project_config.enable_licenses and not info.get('is_license_allowed', False):
                 raise ValueError("this github project not allowed because of licenses")
-            if info.get('is_size_allowed', False):
+            if not info.get('is_size_allowed', False):
                 raise ValueError("this github project not allowed because of space size, too large")
             default_branch = info.get('default_branch')
             if repo_url.endswith('.zip'):
@@ -43,8 +44,8 @@ class GitSourceProvider(SourceProvider):
                     z.extractall(local_dir)
             else:
                 # 处理标准的 GitHub 项目地址
-                owner, repo = self.extract_github_repo_info(repo_url)
                 download_url = f"https://github.com/{owner}/{repo}/archive/refs/heads/{default_branch}.zip"
+                print(download_url)
                 response = requests.get(download_url)
                 with zipfile.ZipFile(BytesIO(response.content)) as z:
                     z.extractall(local_dir)
@@ -74,7 +75,7 @@ class GitSourceProvider(SourceProvider):
         headers = None
         if project_config.github_token:
             headers = {'Authorization': f'token {project_config.github_token}'}
-
+        print(headers)
         response = requests.get(url, headers=headers)
         data = response.json()
         license_name = data.get('license', {}).get('key')
@@ -84,7 +85,7 @@ class GitSourceProvider(SourceProvider):
         size = data.get('size', None)
         is_size_allowed = False
         if size and project_config.allowed_size:
-            is_size_allowed = size > project_config.allowed_size
+            is_size_allowed = size <= project_config.allowed_size
         return {
             'size': data.get('size', None),
             'license': license_name,
