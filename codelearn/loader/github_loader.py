@@ -74,16 +74,17 @@ class GitSourceProvider(SourceProvider):
     
     def get_repo_info(self, owner, repo):
         url = f"https://api.github.com/repos/{owner}/{repo}"
+        print(url)
         headers = None
         if project_config.github_token:
             headers = {'Authorization': f'token {project_config.github_token}'}
-        print(headers)
-        print(f"owner: {owner}")
-        print(f"repo: {repo}")
         response = requests.get(url, headers=headers)
         data = response.json()
-        print(data)
-        license_name = data.get('license', {}).get('key')
+        # will throw error if not exist license
+        license = data.get('license', {})
+        if not license:
+            raise ValueError("this github project not allowed because of not set licenses")
+        license_name = license.get('key')
         is_license_allowed = False
         if license_name and project_config.allowed_licenses:
             is_license_allowed = license_name in project_config.allowed_licenses
