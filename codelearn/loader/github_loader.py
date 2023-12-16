@@ -2,6 +2,7 @@ import io
 import os
 import re
 import time
+import traceback
 import git
 import requests
 import zipfile
@@ -50,8 +51,9 @@ class GitSourceProvider(SourceProvider):
                 with zipfile.ZipFile(BytesIO(response.content)) as z:
                     z.extractall(local_dir)
         except Exception as e:
-            print(f"fetch_contents error: {e}")
-            raise e
+            error = f"fetch_contents error: {e}, trace: {traceback.format_exc()}"
+            print(f"{error}")
+            raise error
 
         print("fetch_contents over")
         return FileTree(local_dir, project_path)
