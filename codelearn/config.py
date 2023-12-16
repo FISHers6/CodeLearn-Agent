@@ -19,6 +19,8 @@ class Config:
         self.allowed_licenses = allowed_licenses
         self.allowed_size = allowed_size
         self.space_size = space_size
+        if not github_token:
+            github_token = os.environ.get('GITHUB_TOKEN')
         self.github_token = github_token
         self.enable_licenses = True
         self.max_clean_threadshold_size = max_clean_threadshold_size
