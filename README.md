@@ -36,6 +36,7 @@ Here are some examples of how to use the CodeLearn Agent:
 🏆Here is a gpts application using codeLearn Agent api: https://chat.openai.com/g/g-WKcbq6Yi0-code-learner
 
 ```
+0. git clone git@github.com:FISHers6/CodeLearn-Agent.git
 1. poetry install
 2. # edit github_token in codelearn/config.yml
 3. python codelearn/example/gpts_action/main.py
@@ -47,9 +48,10 @@ Here are some examples of how to use the CodeLearn Agent:
 3. Ask Code Web UI: This is a Gradio application that provides a chat interface for interacting with the CodeLearn Agent. It uses the `AskCodeWithMemory` class to ask a question and get a response. The `AskCodeWithMemory` class uses the OpenAI API to translate the question into multiple languages and infer hypothetical code. It then retrieves similar documents and codes and asks the question again.
 
 ```
-poetry install
-# edit OPEN_API_KEY and OPEN_API_PROXY and REPO_URL(github url)
-python codelearn/example/ask_code_webui.py
+0. git clone git@github.com:FISHers6/CodeLearn-Agent.git
+1. poetry install
+2. # edit OPEN_API_KEY and OPEN_API_PROXY and REPO_URL(github url) in codelearn/example/ask_code_webui.py
+3. python codelearn/example/ask_code_webui.py
 ```
 ![web-ui图片](https://github.com/FISHers6/CodeLearn-Agent/assets/64670884/78381063-373f-4540-861c-9309616b4b2d)
 
